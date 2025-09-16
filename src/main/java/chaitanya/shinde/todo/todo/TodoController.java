@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
@@ -21,14 +20,15 @@ public class TodoController {
 	}
 
 	@RequestMapping(value = "/add-todo", method = RequestMethod.GET)
-	public String addTodoPage() {
+	public String addTodoPage(ModelMap model) {
+		Todo todo = new Todo(0, (String) model.get("name"), "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
 		return "todo";
 	}
 
 	@RequestMapping(value = "/add-todo", method = RequestMethod.POST)
-	public String addNewTodo(@RequestParam String description, ModelMap model) {
-		System.out.println((String) model.get("name"));
-		todoService.addTodo((String) model.get("name"), description, LocalDate.now().plusYears(1), false);
+	public String addNewTodo(ModelMap model, Todo todo) {
+		todoService.addTodo((String) model.get("name"), todo.getDescription(), LocalDate.now().plusYears(1), false);
 		return "redirect:list-todos"; // redirect to a already present path redirect:path_name
 	}
 
